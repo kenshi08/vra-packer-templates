@@ -1,7 +1,7 @@
 # Move the SSH key to Authorized Keys and ensure permissions
-mkdir -p /home/autotmm/.ssh
-chmod 700 /home/autotmm/.ssh
-cat /tmp/id_rsa.pub > /home/autotmm/.ssh/authorized_keys
-chmod 644 /home/autotmm/.ssh/authorized_keys
-chown -R autotmm /home/autotmm/.ssh
+mkdir -p /home/apjsddc/.ssh
+chmod 700 /home/apjsddc/.ssh
+cat /tmp/id_rsa.pub > /home/apjsddc/.ssh/authorized_keys
+chmod 644 /home/apjsddc/.ssh/authorized_keys
+chown -R apjsddc /home/apjsddc/.ssh
 rm -rf /tmp/id_rsa.pub

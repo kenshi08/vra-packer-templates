@@ -4,7 +4,7 @@ autoinstall:
   identity:
     hostname: packer-ubuntu2004-template
     password: '$6$i3mNhqKGx$IS9I.RGx9/4pBNbN7l/vXnEgHPHmre5.UOkpCMD9cpJFVhLU3fmvY0t8OszDyT8d7.Z55.KZ8M0daw04Vhrxn0'
-    username: autotmm
+    username: apjsddc
   network:
     network:
       version: 2
