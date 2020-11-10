@@ -1,6 +1,8 @@
 yum install -y cloud-init perl open-vm-tools bash-completion yum-utils
 cloud-init clean
 yum clean all
+sed -ie 's/disable_vmware_customization: false/disable_vmware_customization: true/g' /etc/cloud/cloud.cfg
+echo 'network: {config: disabled}' > /etc/cloud/cloud.cfg.d/99-disable-network-config.cfg
 
 cat << MOTD > /etc/motd
                   ╓╦╦╖

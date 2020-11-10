@@ -1,5 +1,7 @@
 
 apt-get install -y cloud-init
+sed -ie 's/disable_vmware_customization: false/disable_vmware_customization: true/g' /etc/cloud/cloud.cfg
+echo 'network: {config: disabled}' > /etc/cloud/cloud.cfg
 # Remove temporary files
 rm -rf /tmp/*
 cat << MOTD > /etc/motd
