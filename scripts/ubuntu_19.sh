@@ -1,4 +1,5 @@
 
+apt-get install -y cloud-init
 # Remove temporary files
 rm -rf /tmp/*
 
