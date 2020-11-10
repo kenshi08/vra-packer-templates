@@ -1,6 +1,10 @@
 #cloud-config
 autoinstall:
   version: 1
+  locale: en_US
+  keyboard:
+    layout: en
+    variant: us
   identity:
     hostname: packer-ubuntu2004-template
     password: '$1$tG.O5xlE$PrpMTBuF24pbw95g4EL4K/'
@@ -14,6 +18,10 @@ autoinstall:
           dhcp-identifier: mac
   ssh:
     install-server: true
+  user-data:
+    disable_root: false
   late-commands:
     - sed -i 's/^#*\(send dhcp-client-identifier\).*$/\1 = hardware;/' /target/etc/dhcp/dhclient.conf
     - 'sed -i "s/dhcp4: true/&\n      dhcp-identifier: mac/" /target/etc/netplan/00-installer-config.yaml'
+    - echo 'apjdemo ALL=(ALL) NOPASSWD:ALL' > /target/etc/sudoers.d/apjdemo
+    
