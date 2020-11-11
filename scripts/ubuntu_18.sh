@@ -2,6 +2,24 @@
 apt-get install -y cloud-init
 sed -ie 's/disable_vmware_customization: false/disable_vmware_customization: true/g' /etc/cloud/cloud.cfg
 echo 'network: {config: disabled}' > /etc/cloud/cloud.cfg
+sed -ie 's/D /tmp 1777 root root –/# D /tmp 1777 root root –/g' /usr/lib/tmpfiles.d/tmp.conf
+sed -ie '/^[Unit]/a After=dbus.service' /lib/systemd/system/open-vmtools.service
+
+touch /etc/cloud/cloud-init.disabled
+
+cat <<EOF >/usr/local/bin/re_init.sh
+sudo rm -rf /etc/cloud/cloud-init.disabled
+sudo cloud-init init
+sleep 20
+sudo cloud-init modules --mode config
+sleep 20
+sudo cloud-init modules --mode final
+EOF
+
+sudo chmod +x re_init.sh
+
+(crontab -e; echo "@reboot ( sleep 90 ; sh /usr/local/bin/re_init.sh )" ) | crontab -
+
 # Remove temporary files
 rm -rf /tmp/*
 cat << MOTD > /etc/motd
