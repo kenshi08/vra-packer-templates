@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Configure cloud-init for OVF only
-echo 'datasource_list: [ OVF, None ]' | sudo -s tee /etc/cloud/cloud.cfg.d/90_dpkg.cfg
+#echo 'datasource_list: [ OVF, None ]' | sudo -s tee /etc/cloud/cloud.cfg.d/90_dpkg.cfg
 
 # Cleanup VM for Templating
 # Source: https://jimangel.io/post/create-a-vm-template-ubuntu-18.04/
@@ -17,12 +17,22 @@ if [ -f /var/log/lastlog ]; then
     truncate -s0 /var/log/lastlog
 fi
 
+#cleanup persistent udev rules
+if [ -f /etc/udev/rules.d/70-persistent-net.rules ]; then
+rm /etc/udev/rules.d/70-persistent-net.rules
+fi
+
 #cleanup /tmp directories
 rm -rf /tmp/*
 rm -rf /var/tmp/*
 
 #cleanup current ssh keys
 rm -f /etc/ssh/ssh_host_*
+
+#Clean Machine ID
+truncate -s 0 /etc/machine-id
+rm /var/lib/dbus/machine-id
+ln -s /etc/machine-id /var/lib/dbus/machine-id
 
 #add check for ssh keys on reboot...regenerate if neccessary
 cat << 'EOL' | tee /etc/rc.local

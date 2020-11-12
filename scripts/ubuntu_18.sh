@@ -1,24 +1,56 @@
 
-apt-get install -y cloud-init
-sed -ie 's/disable_vmware_customization: false/disable_vmware_customization: true/g' /etc/cloud/cloud.cfg
-echo 'network: {config: disabled}' > /etc/cloud/cloud.cfg
-sed -ie 's/D /tmp 1777 root root –/# D /tmp 1777 root root –/g' /usr/lib/tmpfiles.d/tmp.conf
-sed -ie '/^[Unit]/a After=dbus.service' /lib/systemd/system/open-vmtools.service
+#!/bin/bash
 
-touch /etc/cloud/cloud-init.disabled
+sudo apt-get install -y cloud-init perl
 
-cat <<EOF >/usr/local/bin/re_init.sh
-sudo rm -rf /etc/cloud/cloud-init.disabled
-sudo cloud-init init
-sleep 20
-sudo cloud-init modules --mode config
-sleep 20
-sudo cloud-init modules --mode final
+sudo sed -i 's/^disable_root: true/disable_root: false/g' /etc/cloud/cloud.cfg
+sudo sed -i '/^preserve_hostname: false/a\disable_vmware_customization: true' /etc/cloud/cloud.cfg
+
+sudo sed -i '/^disable_vmware_customization: true/a\datasource_list: [OVF]' /etc/cloud/cloud.cfg
+
+sed -i '/^disable_vmware_customization: true/a\network:' /etc/cloud/cloud.cfg
+sed -i '/^network:/a\  config: disabled' /etc/cloud/cloud.cfg
+
+sudo sed -i 's/D/#&/' /usr/lib/tmpfiles.d/tmp.conf
+
+sudo sed -i '/^After=vgauthd.service/a\After=dbus.service' /lib/systemd/system/open-vm-tools.service
+
+sudo touch /etc/cloud/cloud-init.disabled
+
+cat <<EOF > /etc/cloud/runonce.sh
+#!/bin/bash
+  sudo rm -rf /etc/cloud/cloud-init.disabled
+  sudo systemctl restart cloud-init.service
+  sudo systemctl restart cloud-config.service
+  sudo systemctl restart cloud-final.service
+  sudo systemctl disable runonce
+  sudo touch /tmp/cloud-init.success
 EOF
 
-sudo chmod +x re_init.sh
+cat <<EOF > /etc/systemd/system/runonce.service
+[Unit]
+Description=Run once
+Requires=network-online.target
+Requires=cloud-init-local.service
+After=network-online.target
+After=cloud-init-local.service
 
-(crontab -e; echo "@reboot ( sleep 90 ; sh /usr/local/bin/re_init.sh )" ) | crontab -
+[Service]
+###wait for vmware customization to complete, avoid executing cloud-init at the first startup.###
+ExecStartPre=/bin/sleep 30
+ExecStart=/etc/cloud/runonce.sh
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+sudo touch /etc/cloud/cloud-init.disabled
+
+sudo chmod +x /etc/cloud/runonce.sh
+
+sudo systemctl daemon-reload
+
+sudo systemctl enable runonce.service
 
 # Remove temporary files
 rm -rf /tmp/*
