@@ -1,7 +1,7 @@
 
 #!/bin/bash
 
-sudo apt-get install -y cloud-init perl
+sudo apt-get install -y cloud-init perl curl
 
 sudo sed -i 's/^disable_root: true/disable_root: false/g' /etc/cloud/cloud.cfg
 sudo sed -i '/^preserve_hostname: false/a\disable_vmware_customization: true' /etc/cloud/cloud.cfg
