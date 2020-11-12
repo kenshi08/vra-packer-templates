@@ -200,9 +200,30 @@
             "RAM": "2048",
             "RAM_reserve_all": true,
             "boot_command": [
-                "<enter><enter><f6><esc><wait> ",
-                "autoinstall ds=nocloud-net;s={{user `http_server`}}/ubuntu20/",
-                "<enter>"
+                "<enter><wait><f6><esc><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
+                "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
+                "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
+                "<bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs><bs>",
+                "/install/vmlinuz<wait>",
+                "auto<wait>",
+                "console-setup/ask_detect=false<wait>",
+                "console-setup/layoutcode=us<wait>",
+                "console-setup/modelcode=pc105<wait>",
+                "debconf/frontend=noninteractive<wait>",
+                "debian-installer=en_US<wait>",
+                "fb=false<wait>",
+                "initrd=/install/initrd.gz<wait>",
+                "kbd-chooser/method=us<wait>",
+                "keyboard-configuration/layout=USA<wait>",
+                "keyboard-configuration/variant=USA<wait>",
+                "locale=en_US<wait>",
+                "netcfg/get_domain=vm<wait>",
+                "netcfg/get_hostname=ubuntu2004<wait>",
+                "grub-installer/bootdev=/dev/sda<wait>",
+                "noapic<wait>",
+                "url={{user `http_server`}}/ubuntu20.cfg ",
+                "-- <wait>",
+                "<enter><wait>"
             ],
             "boot_order": "disk,cdrom",
             "cluster": "{{user `vcenter_cluster`}}",
@@ -346,6 +367,17 @@
             ],
             "scripts": [
                 "{{ template_dir }}/scripts/ubuntu_18.sh"
+            ],
+            "type": "shell"
+        },
+        {
+            "execute_command": "echo '{{user `ssh_password`}}' | {{ .Vars }} sudo -E -S sh '{{ .Path }}'",
+            "only": [
+                "CentOS7",
+                "CentOS8"
+            ],
+            "scripts": [
+                "{{ template_dir }}/scripts/centos_template_cleanup.sh"
             ],
             "type": "shell"
         },
