@@ -18,7 +18,7 @@ rm -rf /tmp/*
 rm -rf /var/tmp/*
 #cleanup current ssh keys
 #rm -f /etc/ssh/ssh_host_*
-#cat /dev/null > /etc/hostname
+cat /dev/null > /etc/hostname
 #cleanup apt
 yum clean all
 #Clean Machine ID
