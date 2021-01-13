@@ -44,7 +44,7 @@ ExecStart=/etc/cloud/runonce.sh
 WantedBy=multi-user.target
 EOF
 
-#sudo touch /etc/cloud/cloud-init.disabled
+sudo touch /etc/cloud/cloud-init.disabled
 
 sudo chmod +x /etc/cloud/runonce.sh
 

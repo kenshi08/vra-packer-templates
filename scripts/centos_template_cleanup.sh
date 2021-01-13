@@ -28,8 +28,8 @@ ln -s /etc/machine-id /var/lib/dbus/machine-id
 #Clean Cloud-init
 cloud-init clean --logs --seed
 #Disabled Cloud-init
-#touch /etc/cloud/cloud-init.disabled
-#systemctl enable runonce
+touch /etc/cloud/cloud-init.disabled
+systemctl enable runonce
 #cleanup shell history
 echo > ~/.bash_history
 history -cw
